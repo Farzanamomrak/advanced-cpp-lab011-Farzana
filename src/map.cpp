@@ -5,81 +5,130 @@
 
 Map::Map() = default;
 
-bool Map::empty() const noexcept {
+bool Map::empty() const noexcept
+{
     return entries_.empty();
 }
 
-std::size_t Map::size() const noexcept {
+std::size_t Map::size() const noexcept
+{
     return entries_.size();
 }
 
-std::size_t Map::findIndex(const std::string& key) const {
-    for (std::size_t i = 0; i < entries_.size(); ++i) {
-        if (entries_[i].key == key) {
+std::size_t Map::findIndex(const std::string &key) const
+{
+    for (std::size_t i = 0; i < entries_.size(); ++i)
+    {
+        if (entries_[i].key == key)
+        {
             return i;
         }
     }
     return entries_.size();
 }
 
-void Map::sortEntries() {
+void Map::sortEntries()
+{
     std::sort(entries_.begin(), entries_.end(),
-              [](const KeyValuePair& a, const KeyValuePair& b) {
+              [](const KeyValuePair &a, const KeyValuePair &b)
+              {
                   return a.key < b.key;
               });
 }
 
-bool Map::contains(const std::string& key) const {
-    (void)key;
-    throw std::logic_error("Student implementation required: contains");
+bool Map::contains(const std::string &key) const
+{
+    return findIndex(key) != entries_.size();
 }
 
-bool Map::insert(const std::string& key, int value) {
-    (void)key;
-    (void)value;
-    throw std::logic_error("Student implementation required: insert");
+bool Map::insert(const std::string &key, int value)
+{
+    // check if key already exists
+    if (contains(key))
+    {
+        return false;
+    }
+    // add the new key-value pair
+    entries_.push_back({key, value});
+    // sort the entries by key
+    sortEntries();
+    return true;
 }
 
-bool Map::update(const std::string& key, int newValue) {
-    (void)key;
-    (void)newValue;
-    throw std::logic_error("Student implementation required: update");
+bool Map::update(const std::string &key, int newValue)
+{
+    std::size_t index = findIndex(key);
+    // return false if the key does not exist
+    if (index == entries_.size())
+    {
+        return false;
+    }
+    // update the value of the existing key
+    entries_[index].value = newValue;
+    return true;
 }
 
-bool Map::erase(const std::string& key) {
-    (void)key;
-    throw std::logic_error("Student implementation required: erase");
+bool Map::erase(const std::string &key)
+{
+    std::size_t index = findIndex(key);
+    // return false if the key does not exist
+    if (index == entries_.size())
+    {
+        return false;
+    }
+    // remove the existing key-value pair
+    entries_.erase(entries_.begin() + index);
+    return true;
 }
 
-int Map::at(const std::string& key) const {
-    (void)key;
-    throw std::logic_error("Student implementation required: at");
+int Map::at(const std::string &key) const
+{
+    std::size_t index = findIndex(key);
+    // throw an exception if the key does not exist
+    if (index == entries_.size())
+    {
+        throw std::out_of_range("Key not found");
+    }
+    return entries_[index].value;
 }
 
-int& Map::at(const std::string& key) {
-    (void)key;
-    throw std::logic_error("Student implementation required: at non-const");
+int &Map::at(const std::string &key)
+{
+    std::size_t index = findIndex(key);
+    // throw an exception if the key does not exist
+    if (index == entries_.size())
+    {
+        throw std::out_of_range("Key not found");
+    }
+    return entries_[index].value;
 }
 
-std::vector<std::string> Map::keys() const {
+std::vector<std::string> Map::keys() const
+{
     std::vector<std::string> result;
-    for (const auto& entry : entries_) {
+    for (const auto &entry : entries_)
+    {
         result.push_back(entry.key);
     }
     return result;
 }
 
-std::vector<int> Map::values() const {
+std::vector<int> Map::values() const
+{
     std::vector<int> result;
-    for (const auto& entry : entries_) {
+    for (const auto &entry : entries_)
+    {
         result.push_back(entry.value);
     }
     return result;
 }
 
-bool Map::isSorted() const noexcept {
-    for (std::size_t i = 1; i < entries_.size(); ++i) {
-        if (entries_[i - 1].key > entries_[i].key) {
+bool Map::isSorted() const noexcept
+{
+    for (std::size_t i = 1; i < entries_.size(); ++i)
+    {
+        if (entries_[i - 1].key > entries_[i].key)
+        {
             return false;
         }
     }
